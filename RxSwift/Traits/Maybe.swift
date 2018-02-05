@@ -241,4 +241,19 @@ public extension PrimitiveSequenceType where TraitType == MaybeTrait {
         -> Maybe<R> {
             return Maybe<R>(raw: primitiveSequence.source.flatMap(selector))
     }
+
+    /**
+     Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.
+
+     - seealso: [defer operator on reactivex.io](http://reactivex.io/documentation/operators/defer.html)
+
+     - parameter valueFactory: Element factory function to invoke for each observer that subscribes to the resulting sequence.
+     - returns: An observable sequence whose observers trigger an invocation of the given observable factory function.
+     */
+    public static func deferredElement(_ elementFactory: @escaping () throws -> ElementType?)
+        -> Maybe<ElementType> {
+            return Maybe(raw: Observable.deferred {
+                try elementFactory().map(Observable.just) ?? .empty()
+            })
+    }
 }

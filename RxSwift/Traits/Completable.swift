@@ -134,6 +134,20 @@ public extension PrimitiveSequenceType where TraitType == CompletableTrait, Elem
         return Completable(raw: Observable.empty())
     }
 
+    /**
+     Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.
+
+     - seealso: [defer operator on reactivex.io](http://reactivex.io/documentation/operators/defer.html)
+
+     - parameter valueFactory: Element factory function to invoke for each observer that subscribes to the resulting sequence.
+     - returns: An observable sequence whose observers trigger an invocation of the given observable factory function.
+     */
+    public static func deferredElement(_ elementFactory: @escaping () throws -> Void) -> Completable {
+        return Completable(raw: Observable.deferred {
+            try elementFactory()
+            return .empty()
+        })
+    }
 }
 
 public extension PrimitiveSequenceType where TraitType == CompletableTrait, ElementType == Swift.Never {    

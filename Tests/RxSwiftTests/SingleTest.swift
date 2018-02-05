@@ -180,6 +180,16 @@ extension SingleTest {
         XCTAssertEqual(result, [1])
     }
 
+    func test_deferredElement() {
+        let result = try! (Single.deferredElement { 1 } as Single<Int>).toBlocking().toArray()
+        XCTAssertEqual(result, [1])
+    }
+
+    func test_deferredElementWhenErrors() {
+        XCTAssertThrowsErrorEqual(try (Single.deferredElement { throw testError } as Single<Int>).toBlocking().toArray(),
+                                  testError)
+    }
+
     func test_delay() {
         let scheduler = TestScheduler(initialClock: 0)
 

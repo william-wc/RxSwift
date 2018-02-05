@@ -231,6 +231,21 @@ extension MaybeTest {
         XCTAssertEqual(result, [1])
     }
 
+    func test_deferredElementWhenSingleValue() {
+        let result = try! (Maybe.deferredElement { 1 } as Maybe<Int>).toBlocking().toArray()
+        XCTAssertEqual(result, [1])
+    }
+
+    func test_deferredElementWhenNoValue() {
+        let result = try! (Maybe.deferredElement { nil } as Maybe<Int>).toBlocking().toArray()
+        XCTAssertEqual(result, [])
+    }
+
+    func test_deferredElementWhenErrors() {
+        XCTAssertThrowsErrorEqual(try (Maybe.deferredElement { throw testError } as Maybe<Int>).toBlocking().toArray(),
+                                  testError)
+    }
+
     func test_delaySubscription() {
         let scheduler = TestScheduler(initialClock: 0)
 

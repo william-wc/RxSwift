@@ -149,6 +149,20 @@ extension PrimitiveSequenceType where TraitType == SingleTrait {
     public static func never() -> Single<ElementType> {
         return PrimitiveSequence(raw: Observable.never())
     }
+
+    /**
+     Returns an observable sequence that invokes the specified factory function whenever a new observer subscribes.
+
+     - seealso: [defer operator on reactivex.io](http://reactivex.io/documentation/operators/defer.html)
+
+     - parameter valueFactory: Element factory function to invoke for each observer that subscribes to the resulting sequence.
+     - returns: An observable sequence whose observers trigger an invocation of the given observable factory function.
+     */
+    public static func deferredElement(_ elementFactory: @escaping () throws -> ElementType) -> Single<ElementType> {
+        return Single(raw: Observable.deferred {
+            .just(try elementFactory())
+        })
+    }
 }
 
 extension PrimitiveSequenceType where TraitType == SingleTrait {

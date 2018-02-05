@@ -169,6 +169,16 @@ extension CompletableTest {
         XCTAssertEqual(result, [])
     }
 
+    func test_deferredElement() {
+        let result = try! (Completable.deferredElement {} as Completable).toBlocking().toArray()
+        XCTAssertEqual(result, [])
+    }
+
+    func test_deferredElementWhenErrors() {
+        XCTAssertThrowsErrorEqual(try (Completable.deferredElement { throw testError } as Completable).toBlocking().toArray(),
+                                  testError)
+    }
+
     func test_delaySubscription() {
         let scheduler = TestScheduler(initialClock: 0)
 
